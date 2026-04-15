@@ -1,0 +1,32 @@
+[project]
+name = "modelux"
+version = "0.1.0"
+description = "Modelux SDK — LLM proxy with intelligent routing, budgets, caching, and observability"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["modelux", "llm", "openai", "anthropic", "google", "proxy", "routing", "ai"]
+dependencies = [
+  "openai>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://docs.modelux.ai"
+Repository = "https://github.com/modelux/modelux-python"
+Issues = "https://github.com/modelux/modelux-python/issues"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "pytest-asyncio>=0.24",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/modelux"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
