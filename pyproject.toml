@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://docs.modelux.ai"
+Homepage = "https://modelux.ai/docs"
 Repository = "https://github.com/modelux/modelux-python"
 Issues = "https://github.com/modelux/modelux-python/issues"
 

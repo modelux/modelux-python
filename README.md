@@ -144,7 +144,7 @@ response = client.chat.completions.create(
 If you're using Claude (or another agent harness that supports Skills), install the official Modelux Skill so your assistant has built-in knowledge of our APIs, MCP tools, and routing config schema:
 
 ```bash
-curl -fsSL https://docs.modelux.ai/skill/install.sh | sh
+curl -fsSL https://modelux.ai/skill/install.sh | sh
 ```
 
 ## License
