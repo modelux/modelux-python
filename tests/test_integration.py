@@ -1,52 +1,43 @@
 """
-Integration tests — hit the running Modelux proxy.
+Integration tests — hit a real Modelux proxy.
 
-Requires:
-  - Proxy running on localhost:8080 (./dev/start)
-  - DASHBOARD_AI_API_KEY set in .env
+Required env vars:
+  - MODELUX_API_KEY           Modelux API key (e.g. mlx_sk_...)
+  - MODELUX_INTEGRATION=1     set to enable these tests
+
+Optional:
+  - MODELUX_BASE_URL          defaults to https://api.modelux.ai/v1
+  - MODELUX_MODEL             defaults to "@default"
 
 Run:
-  MODELUX_INTEGRATION=1 .venv/bin/pytest tests/test_integration.py -v
+  MODELUX_INTEGRATION=1 MODELUX_API_KEY=mlx_sk_... pytest tests/test_integration.py -v
 """
 
 import os
-from pathlib import Path
 
 import pytest
 
 from modelux import Modelux, AsyncModelux
 
 
-def load_env() -> dict[str, str]:
-    env_path = Path(__file__).resolve().parents[3] / ".env"
-    if not env_path.exists():
-        return {}
-    env = {}
-    for line in env_path.read_text().splitlines():
-        if "=" in line and not line.startswith("#"):
-            key, _, value = line.partition("=")
-            env[key.strip()] = value.strip()
-    return env
-
-
 SKIP = not os.environ.get("MODELUX_INTEGRATION")
-ENV = load_env()
-API_KEY = ENV.get("DASHBOARD_AI_API_KEY", "")
-MODEL = ENV.get("DASHBOARD_AI_MODEL", "@default")
+API_KEY = os.environ.get("MODELUX_API_KEY", "")
+BASE_URL = os.environ.get("MODELUX_BASE_URL", "https://api.modelux.ai/v1")
+MODEL = os.environ.get("MODELUX_MODEL", "@default")
 
 pytestmark = pytest.mark.skipif(SKIP, reason="MODELUX_INTEGRATION not set")
 
 
 @pytest.fixture
 def client():
-    c = Modelux(api_key=API_KEY, base_url="http://localhost:8080/v1")
+    c = Modelux(api_key=API_KEY, base_url=BASE_URL)
     yield c
     c.close()
 
 
 @pytest.fixture
 def async_client():
-    return AsyncModelux(api_key=API_KEY, base_url="http://localhost:8080/v1")
+    return AsyncModelux(api_key=API_KEY, base_url=BASE_URL)
 
 
 class TestSync:
@@ -114,7 +105,7 @@ class TestSync:
     def test_invalid_api_key(self):
         bad_client = Modelux(
             api_key="mlx_sk_invalid",
-            base_url="http://localhost:8080/v1",
+            base_url=BASE_URL,
         )
         with pytest.raises(Exception):
             bad_client.chat.completions.create(
